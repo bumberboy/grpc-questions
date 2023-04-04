@@ -18,28 +18,28 @@ func NewQuestionDB() *QuestionDB {
 	}
 }
 
-func (db *QuestionDB) Create(q model.Question) error {
+func (db *QuestionDB) Create(q model.Question) (*model.Question, error) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
-	if _, exists := db.store[q.ID]; exists {
-		return fmt.Errorf("question %d already exists", q.ID)
-	}
-
+	newID := int64(len(db.store))
+	q.ID = newID
 	q.CreatedAt = time.Now()
-	db.store[q.ID] = q
-	return nil
+	q.UpdatedAt = time.Now()
+	db.store[newID] = q
+	return &q, nil
 }
 
-func (db *QuestionDB) Update(q model.Question) error {
-	_, err := db.Read(q.ID)
+func (db *QuestionDB) Update(q model.Question) (*model.Question, error) {
+	old, err := db.Read(q.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	db.mu.Lock()
 	defer db.mu.Unlock()
+	q.CreatedAt = old.CreatedAt
 	q.UpdatedAt = time.Now()
 	db.store[q.ID] = q
-	return nil
+	return &q, nil
 }
 
 func (db *QuestionDB) List() ([]model.Question, error) {
@@ -52,12 +52,12 @@ func (db *QuestionDB) List() ([]model.Question, error) {
 	return s, nil
 }
 
-func (db *QuestionDB) Read(id int64) (model.Question, error) {
+func (db *QuestionDB) Read(id int64) (*model.Question, error) {
 	db.mu.RLock()
 	defer db.mu.RUnlock()
 	q, ok := db.store[id]
 	if !ok {
-		return model.Question{}, fmt.Errorf("question %d not found", id)
+		return nil, fmt.Errorf("question %d not found", id)
 	}
-	return q, nil
+	return &q, nil
 }
