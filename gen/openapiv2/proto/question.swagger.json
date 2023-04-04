@@ -1,0 +1,260 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/question.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "QuestionService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/questions": {
+      "get": {
+        "operationId": "QuestionService_ListQuestions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/questionListQuestionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "QuestionService"
+        ]
+      },
+      "post": {
+        "operationId": "QuestionService_CreateQuestion",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/questionCreateQuestionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/questionCreateQuestionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "QuestionService"
+        ]
+      }
+    },
+    "/v1/questions/{id}": {
+      "get": {
+        "operationId": "QuestionService_ReadQuestion",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/questionReadQuestionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "QuestionService"
+        ]
+      }
+    },
+    "/v1/questions/{question.id}": {
+      "put": {
+        "operationId": "QuestionService_UpdateQuestion",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/questionUpdateQuestionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "question.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/questionUpdateQuestionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "QuestionService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "questionCreateQuestionRequest": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "$ref": "#/definitions/questionQuestion"
+        }
+      },
+      "title": "Request messages for the RPC methods"
+    },
+    "questionCreateQuestionResponse": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "$ref": "#/definitions/questionQuestion"
+        }
+      },
+      "title": "Response messages for the RPC methods"
+    },
+    "questionListQuestionsResponse": {
+      "type": "object",
+      "properties": {
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/questionQuestion"
+          }
+        }
+      }
+    },
+    "questionQuestion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "answer": {
+          "type": "string"
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "Message representing a Question"
+    },
+    "questionReadQuestionResponse": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "$ref": "#/definitions/questionQuestion"
+        }
+      }
+    },
+    "questionUpdateQuestionRequest": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "$ref": "#/definitions/questionQuestion"
+        }
+      }
+    },
+    "questionUpdateQuestionResponse": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "$ref": "#/definitions/questionQuestion"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

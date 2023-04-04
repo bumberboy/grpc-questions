@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package question;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+option go_package = "grpc-questions/questionpb";
+
+// Message representing a Question
+message Question {
+  int64 id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  string title = 4;
+  string body = 5;
+  string answer = 6;
+  string explanation = 7;
+  map<string, string> params = 8;
+}
+
+// Request messages for the RPC methods
+message CreateQuestionRequest {
+  Question question = 1;
+}
+
+message ReadQuestionRequest {
+  int64 id = 1;
+}
+
+message ListQuestionsRequest {}
+
+message UpdateQuestionRequest {
+  Question question = 1;
+}
+
+// Response messages for the RPC methods
+message CreateQuestionResponse {
+  Question question = 1;
+}
+
+message ReadQuestionResponse {
+  Question question = 1;
+}
+
+message ListQuestionsResponse {
+  repeated Question questions = 1;
+}
+
+message UpdateQuestionResponse {
+  Question question = 1;
+}
+
+// Service definition for Question management
+service QuestionService {
+  rpc CreateQuestion (CreateQuestionRequest) returns (CreateQuestionResponse) {
+    option (google.api.http) = {
+      post: "/v1/questions"
+      body: "*"
+    };
+  };
+  rpc ReadQuestion (ReadQuestionRequest) returns (ReadQuestionResponse) {
+    option (google.api.http) = {
+      get: "/v1/questions/{id}"
+    };
+  };
+  rpc ListQuestions (ListQuestionsRequest) returns (ListQuestionsResponse) {
+    option (google.api.http) = {
+      get: "/v1/questions"
+    };
+  };
+  rpc UpdateQuestion (UpdateQuestionRequest) returns (UpdateQuestionResponse) {
+    option (google.api.http) = {
+      put: "/v1/questions/{question.id}"
+      body: "*"
+    };
+  };
+}
