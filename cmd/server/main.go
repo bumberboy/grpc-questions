@@ -12,7 +12,7 @@ func main() {
 	s := grpc.NewServer()
 	mux := runtime.NewServeMux()
 
-	question.RegisterService(s, mux)
+	question.RegisterService(s, "localhost:8090", mux)
 	go startGrpcServer(s)
 	go startGateway(mux)
 
@@ -20,7 +20,7 @@ func main() {
 }
 
 func startGrpcServer(svr *grpc.Server) {
-	l, err := net.Listen("tcp", ":8080")
+	l, err := net.Listen("tcp", ":8090")
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +31,7 @@ func startGrpcServer(svr *grpc.Server) {
 
 func startGateway(mux *runtime.ServeMux) {
 
-	if err := http.ListenAndServe(":8081", mux); err != nil {
+	if err := http.ListenAndServe(":8091", mux); err != nil {
 		panic(err)
 	}
 }

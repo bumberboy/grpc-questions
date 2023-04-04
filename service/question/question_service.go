@@ -34,7 +34,7 @@ func (s *Service) UpdateQuestion(ctx context.Context, request *questionpb.Update
 	panic("implement me")
 }
 
-func RegisterService(svr *grpc.Server, httpGwMux *runtime.ServeMux) {
+func RegisterService(svr *grpc.Server, svrEndpoint string, httpGwMux *runtime.ServeMux) {
 
 	questionpb.RegisterQuestionServiceServer(svr, &Service{
 		db: store.NewQuestionDB(),
@@ -42,7 +42,9 @@ func RegisterService(svr *grpc.Server, httpGwMux *runtime.ServeMux) {
 
 	ctx := context.Background()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	if err := questionpb.RegisterQuestionServiceHandlerFromEndpoint(ctx, httpGwMux, "localhost:8080", opts); err != nil {
-		panic(err)
+	if httpGwMux != nil {
+		if err := questionpb.RegisterQuestionServiceHandlerFromEndpoint(ctx, httpGwMux, svrEndpoint, opts); err != nil {
+			panic(err)
+		}
 	}
 }
